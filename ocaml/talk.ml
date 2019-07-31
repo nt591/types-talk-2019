@@ -1,7 +1,9 @@
-(* let add2 x y = *)
+(* let add2 x y = x +. y
+
+let test = add2 2. *)
 
 
-(* let sum_list lst = *)
+(* let sum_list lst = List.fold_left (+) 0 lst *)
 
 (* let sum_list_again nums_to_add =
   let rec inner_function initial_val list = match list with
@@ -11,15 +13,14 @@
 
 
 
-(*
-let rec map fn list = match list with
+(* let rec map fn list = match list with
   | [] -> []
   | h::t -> fn h :: map fn t *)
 
 
 
 (* Variant Types (Algebraic Data Types) *)
-(* type role = Frontend | Backend | Operations
+type role = Frontend | Backend | Operations
 type office_location = Baltimore | San_Francisco
 
 type employee = {
@@ -29,30 +30,30 @@ type employee = {
   office: office_location option
 }
 
+
 let employee_works_hard emp = match emp.name with
   | "Russ" -> false
   | _ -> true
 
 let employee_has_snacks employee = match employee.office with
   | Some x -> true
-  | None -> false *)
+  | None -> false
 
 
 
 
 (* RECURSIVE *)
-(* type 'a tree
+type 'a tree
   = Node of 'a tree * 'a * 'a tree
   | Leaf
 
 let rec mem x tree = match tree with
   | Leaf -> false
-  | Node (left, y, right) -> y = x || mem x left || mem x right *)
+  | Node (left, y, right) -> y = x || mem x left || mem x right
 
 
 
-(*
-type http_response = (int * string)
+(* type http_response = (int * string)
 
 let log_response resp = match resp with
   | (status, err) when status >= 400 -> "Error: " ^ err
@@ -74,7 +75,7 @@ type message = Chatroom of chatroom_message *)
 
 
 (* AFTER *)
-(* type user_message = {
+type user_message = {
   status_code: int;
   body: string;
   user_id: int;
@@ -102,14 +103,14 @@ type message
   | Error of error
 
 let log_response_again = function
-  | UserMessage {status_code; body, user_id} -> "User " ^ (string_of_int user_id) ^ " - " ^ body
+  | UserMessage {status_code; body; user_id} -> "User " ^ (string_of_int user_id) ^ " - " ^ body
   | GuestMessage {body} -> "Guest - " ^ body
   | Error {status_code; error; chatroom_id} when status_code >= 500 -> "Internal Server Error: " ^ error
-  | Error {status_code; error; chatroom_id} -> "Error: " ^ error ^ " - chatroom - " ^ (string_of_int chatroom_id) *)
+  | Error {status_code; error; chatroom_id} -> "Error: " ^ error ^ " - chatroom - " ^ (string_of_int chatroom_id)
 
 
 
-(* type shape =
+type shape =
   | Circle of float
   | Rect of float * float
   | Triangle of float * float
@@ -117,4 +118,4 @@ let log_response_again = function
 let calculate_area shape = match shape with
   | Circle radius -> radius *. radius *. 3.1415
   | Rect (width, height) -> width *. height
-  | Triangle (base, height) -> 0.5 *. base *. height *)
+  | Triangle (base, height) -> 0.5 *. base *. height

@@ -9,7 +9,8 @@
 --
 
 import Browser
-import Html exposing (Html)
+import Html exposing (Html, div, button)
+import Html.Events exposing (onClick)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Task
@@ -36,12 +37,13 @@ main =
 type alias Model =
   { zone : Time.Zone
   , time : Time.Posix
+  , paused : Bool
   }
 
 
 init : () -> (Model, Cmd Msg)
 init _ =
-  ( Model Time.utc (Time.millisToPosix 0)
+  ( Model Time.utc (Time.millisToPosix 0) False
   , Cmd.batch
       [ Task.perform AdjustTimeZone Time.here
       , Task.perform Tick Time.now
@@ -56,7 +58,7 @@ init _ =
 type Msg
   = Tick Time.Posix
   | AdjustTimeZone Time.Zone
-
+  | ToggleClock
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -71,6 +73,11 @@ update msg model =
       , Cmd.none
       )
 
+    ToggleClock ->
+      ( { model | paused = (not model.paused) }
+      , Cmd.none
+      )
+
 
 
 -- SUBSCRIPTIONS
@@ -78,7 +85,10 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every 1000 Tick
+  if model.paused then
+    Sub.none
+  else
+    Time.every 1000 Tick
 
 
 
@@ -92,16 +102,21 @@ view model =
     minute = toFloat (Time.toMinute model.zone model.time)
     second = toFloat (Time.toSecond model.zone model.time)
   in
-  svg
-    [ viewBox "0 0 400 400"
-    , width "400"
-    , height "400"
-    ]
-    [ circle [ cx "200", cy "200", r "120", fill "#1293D8" ] []
-    , viewHand 6 60 (hour/12)
-    , viewHand 6 90 (minute/60)
-    , viewHand 3 90 (second/60)
-    ]
+  div []
+  [
+    svg
+      [ viewBox "0 0 400 400"
+      , width "400"
+      , height "400"
+      ]
+      [ circle [ cx "200", cy "200", r "120", fill "#1293D8" ] []
+      , viewHand 6 60 (hour/12)
+      , viewHand 6 90 (minute/60)
+      , viewHand 3 90 (second/60)
+      ]
+  , button [ onClick ToggleClock ] [ text "Toggle Clock" ]
+  ]
+
 
 
 viewHand : Int -> Float -> Float -> Svg msg
